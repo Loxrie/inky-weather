@@ -1,0 +1,8 @@
+node_modules
+
+*.jaon
+wifi,py
+location.py
+*.env
+
+.DS_Store
