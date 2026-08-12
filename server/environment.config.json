@@ -1,0 +1,8 @@
+{
+  "apps": [
+    {
+      "name": "tiny-weather",
+      "script": "./dist/index.js"
+    }
+  ]
+}

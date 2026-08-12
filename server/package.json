@@ -1,0 +1,33 @@
+{
+  "name": "tiny-weather",
+  "version": "1.0.0",
+  "description": "Strips unnecessary values from JSON objects recursively",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --watch --env-file .env src/index.ts",
+    "start": "node --env-file .env dist/index.js",
+    "build": "tsc",
+    "type:check": "tsc --noEmit",
+    "lint": "eslint",
+    "format": "prettier"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1",
+    "pm2": "^7.0.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tsconfig/node22": "^22.0.5",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.2.0",
+    "eslint": "^10.8.1",
+    "eslint-plugin-perfectionist": "^5.10.1",
+    "format": "^0.2.2",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.67.0"
+  }
+}
