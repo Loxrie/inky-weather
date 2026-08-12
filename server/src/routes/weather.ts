@@ -1,17 +1,17 @@
 import type { RequestHandler } from "express-serve-static-core";
 
-// import inDepthRemove, { kph, farenheit, abbreviation, unwantedUV, unwatedText } from "../lib/inDepthRemove.js";
+// import inDepthRemove, { kph, farenheit, abbreviation, unwantedUV, unwatedText } from "../lib/inDepthRemove.js"
 
 interface OptimisedSummary {
   gustSpeedMph: number[];
   localDate: string[];
-  maxTempC: number[];
   minTempC: number[];
+  maxTempC: number[];
   mostLikelyHighTemperatureC: number[];
   mostLikelyLowTemperatureC: number[];
   pollenIndexText: (string | null)[];
   pollutionIndexText: (string | null)[];
-  precipitationProbabilityInPercent: (number | null)[]
+  precipitationProbabilityInPercent: (number | null)[];
   sunrise: string[];
   sunset: string[];
   uvIndexText: string[];
@@ -20,12 +20,29 @@ interface OptimisedSummary {
   windSpeedMph: number[];
 }
 
+interface HourlyDetails {
+  gustSpeedMph: number[];
+  feelsLikeTemperatureC: number[];
+  humidity: number[];
+  precipitationProbabilityInPercent: (number | null)[];
+  pressure: number[];
+  temperatureC: number[];
+  timeslot: string[];
+  visibility: string[];
+  weatherTypeText: string[];
+  windDirection: string[];
+  windSpeedMph: number[];
+}
+
+type HourlyReports<T> = Record<string, T>;
+
 interface OptimisedResponse {
   name: string;
   isNight: boolean;
   issueDate: string;
   lastUpdated: string;
   summary: OptimisedSummary;
+  hourly: HourlyReports<HourlyDetails>;
 }
 
 export interface BBCWeatherAggregatedResponse {
@@ -118,7 +135,7 @@ export interface SummaryReport {
   precipitationProbabilityInPercent: number;
   precipitationProbabilityText: string;
   sunrise: string; // HH:MM
-  sunset: string;  // HH:MM
+  sunset: string; // HH:MM
   uppermaxTemperatureC: number | null;
   uppermaxTemperatureF: number | null;
   upperminTemperatureC: number | null;
@@ -149,7 +166,7 @@ export function get(): RequestHandler {
     const url = `https://weather-broker-cdn.api.bbci.co.uk/en/forecast/aggregated/${req.params.id}`;
     const response = await fetch(url);
     const text = await response.text();
-    const data = await JSON.parse(text) as BBCWeatherAggregatedResponse;
+    const data = (await JSON.parse(text)) as BBCWeatherAggregatedResponse;
 
     const summaryKeys: (keyof SummaryReport)[] = [
       "gustSpeedMph",
@@ -164,6 +181,20 @@ export function get(): RequestHandler {
       "sunrise",
       "sunset",
       "uvIndexText",
+      "weatherTypeText",
+      "windDirection",
+      "windSpeedMph",
+    ];
+
+    const detailedKeys: (keyof DetailedReport)[] = [
+      "feelsLikeTemperatureC",
+      "gustSpeedMph",
+      "humidity",
+      "precipitationProbabilityInPercent",
+      "pressure",
+      "temperatureC",
+      "timeslot",
+      "visibility",
       "weatherTypeText",
       "windDirection",
       "windSpeedMph",
@@ -189,19 +220,48 @@ export function get(): RequestHandler {
         uvIndexText: [],
         weatherTypeText: [],
         windDirection: [],
-        windSpeedMph: []
+        windSpeedMph: [],
       },
+      hourly: {},
     };
 
-    data.forecasts.forEach(forecast => {
+    data.forecasts.forEach((forecast) => {
       const summary = forecast.summary.report;
-      
-      summaryKeys.forEach(key => {
+      const reports = forecast.detailed?.reports;
+
+      summaryKeys.forEach((key) => {
         if (key in summary) {
           const value = summary[key];
           (optimised.summary[key as keyof OptimisedSummary] as any[]).push(value);
         }
       });
+
+      if (reports && req.query.report) {
+        reports.forEach((report) => {
+          const localDate = report["localDate"]
+          if (!optimised.hourly[localDate]) {
+            optimised.hourly[localDate] = {
+              feelsLikeTemperatureC: [],
+              gustSpeedMph: [],
+              humidity: [],
+              precipitationProbabilityInPercent: [],
+              pressure: [],
+              temperatureC: [],
+              timeslot: [],
+              visibility: [],
+              weatherTypeText: [],
+              windDirection: [],
+              windSpeedMph: [],
+            }
+          }
+          detailedKeys.forEach((key) => {
+            if (key in report) {
+              const value = report[key];
+              (optimised.hourly[localDate][key as keyof HourlyDetails] as any[]).push(value);
+            }
+          });
+        });
+      }
     });
 
     res.status(200).json(optimised);

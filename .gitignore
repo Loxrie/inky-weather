@@ -6,11 +6,9 @@
 
 dist
 
-client/lib
 client/__pycache__
 client/wifi.py
 client/location.py
-client/inky_helper.py
 client/images/**/*.png
 
 server/config/default.json

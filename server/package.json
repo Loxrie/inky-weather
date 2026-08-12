@@ -6,6 +6,11 @@
   "scripts": {
     "dev": "tsx --watch --env-file .env src/index.ts",
     "start": "node --env-file .env dist/index.js",
+    "pm2:add": "pm2 start environment.config.json",
+    "pm2:start": "pm2 start tiny-weather",
+    "pm2:stop": "pm2 stop tiny-weather",
+    "pm2:remove": "pm2 del tiny-weather",
+    "pm2:restart": "pm2 restart tiny-weather",
     "build": "tsc",
     "type:check": "tsc --noEmit",
     "lint": "eslint",
