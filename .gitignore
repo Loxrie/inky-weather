@@ -1,15 +1,21 @@
 .weather
-node_modules
 
-wifi,py
-location.py
 *.env
 
 .DS_Store
 
 dist
-    
+
+client/lib
+client/__pycache__
+client/wifi.py
+client/location.py
+client/inky_helper.py
+client/images/**/*.png
+
 server/config/default.json
+server/node_modules
+
 .env
 .env.local
 .env.development.local
