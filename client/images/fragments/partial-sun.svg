@@ -1,0 +1,12 @@
+
+<svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 -2.8 32 32" width="32px" height="32px">
+    <g fill="#fdc400">
+        <polygon points="20.1,4.8 17.8,4.8 17.8,0 20.1,0 20.1,4.8"></polygon>
+        <polygon points="20.1,26.3 17.8,26.3 17.8,21.4 20.1,21.4 20.1,26.3"></polygon>
+        <polygon points="27.2,14.3 27.2,12 32,12 32,14.3 27.2,14.3"></polygon>
+        <polygon points="24.5,25.1 22.1,20.9 24.1,19.7 26.5,23.9 24.5,25.1"></polygon>
+        <polygon points="26.7,10 25.5,8 29.7,5.6 30.8,7.6 26.7,10"></polygon>
+        <polygon points="29.7,20.7 25.5,18.3 26.7,16.3 30.8,18.7 29.7,20.7"></polygon>
+        <polygon points="24.1,6.5 22.1,5.4 24.5,1.2 26.5,2.3 24.1,6.5"></polygon>
+    </g>
+</svg>
