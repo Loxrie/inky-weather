@@ -146,17 +146,17 @@ Same as above but also upload `images`
 
 [^1]: Yes this isn't a proper Bearer token, feel free to implement JWT or some other authentication if your needs require it.
 
+### Usage
+
+
+| Button | Action                                                                           |
+| ------ | -------------------------------------------------------------------------------- |
+| A      | Returns to first page of summary data, or no action                              |
+| B      | If viewing hourly data goes back a page if possible.                             |
+| C      | Deep sleep if on battery power                                                   |
+| D      | Move on a page in hourly data or start viewing hourly data                       |
+| E      | Views second page of summary data or no action, 15th day of summary data ignored |
+
 ### To Do
 
-At the moment it deep sleeps for 1hr 30 before refreshing data.
-
-Navigation across days.
-
-Some way of navigating and displaying the hourly data.  Screen refresh is so slow I'm not sure.
-
-Maybe
-
-* Button 'A' changes page.
-* Render only 4 columns
-* Button 'B' to 'E' display detailed data for that column.
-* In the detail screen button A goes back, other buttons paginate details unless by some miracle I can fit them.
+At the moment it deep sleeps for 1hr 30 before refreshing data.  Deep sleep plays havoc with USB power, it should detect USB but may not.
