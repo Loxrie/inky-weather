@@ -21,9 +21,10 @@ interface OptimisedSummary {
 }
 
 interface HourlyDetails {
-  gustSpeedMph: number[];
   feelsLikeTemperatureC: number[];
+  gustSpeedMph: number[];
   humidity: number[];
+  localDate: string[];
   precipitationProbabilityInPercent: (number | null)[];
   pressure: number[];
   temperatureC: number[];
@@ -34,15 +35,13 @@ interface HourlyDetails {
   windSpeedMph: number[];
 }
 
-type HourlyReports<T> = Record<string, T>;
-
 interface OptimisedResponse {
   name: string;
   isNight: boolean;
   issueDate: string;
   lastUpdated: string;
   summary: OptimisedSummary;
-  hourly: HourlyReports<HourlyDetails>;
+  hourly: HourlyDetails;
 }
 
 export interface BBCWeatherAggregatedResponse {
@@ -190,6 +189,7 @@ export function get(): RequestHandler {
       "feelsLikeTemperatureC",
       "gustSpeedMph",
       "humidity",
+      "localDate",
       "precipitationProbabilityInPercent",
       "pressure",
       "temperatureC",
@@ -222,7 +222,20 @@ export function get(): RequestHandler {
         windDirection: [],
         windSpeedMph: [],
       },
-      hourly: {},
+      hourly: {
+        localDate: [],
+        feelsLikeTemperatureC: [],
+        gustSpeedMph: [],
+        humidity: [],
+        precipitationProbabilityInPercent: [],
+        pressure: [],
+        temperatureC: [],
+        timeslot: [],
+        visibility: [],
+        weatherTypeText: [],
+        windDirection: [],
+        windSpeedMph: [],
+      },
     };
 
     data.forecasts.forEach((forecast) => {
@@ -239,25 +252,10 @@ export function get(): RequestHandler {
       if (reports && req.query.report) {
         reports.forEach((report) => {
           const localDate = report["localDate"]
-          if (!optimised.hourly[localDate]) {
-            optimised.hourly[localDate] = {
-              feelsLikeTemperatureC: [],
-              gustSpeedMph: [],
-              humidity: [],
-              precipitationProbabilityInPercent: [],
-              pressure: [],
-              temperatureC: [],
-              timeslot: [],
-              visibility: [],
-              weatherTypeText: [],
-              windDirection: [],
-              windSpeedMph: [],
-            }
-          }
           detailedKeys.forEach((key) => {
             if (key in report) {
               const value = report[key];
-              (optimised.hourly[localDate][key as keyof HourlyDetails] as any[]).push(value);
+              (optimised.hourly[key as keyof HourlyDetails] as any[]).push(value);
             }
           });
         });
