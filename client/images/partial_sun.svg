@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="Partial-Sun" serif:id="Partial Sun" transform="matrix(1,0,0,1,-1,1.85)">
+        <rect x="17.8" y="0" width="2.3" height="4.8" style="fill:rgb(253,196,0);fill-rule:nonzero;"/>
+        <rect x="17.8" y="21.4" width="2.3" height="4.9" style="fill:rgb(253,196,0);fill-rule:nonzero;"/>
+        <rect x="27.2" y="12" width="4.8" height="2.3" style="fill:rgb(253,196,0);fill-rule:nonzero;"/>
+        <path d="M24.5,25.1L22.1,20.9L24.1,19.7L26.5,23.9L24.5,25.1Z" style="fill:rgb(253,196,0);fill-rule:nonzero;"/>
+        <path d="M26.7,10L25.5,8L29.7,5.6L30.8,7.6L26.7,10Z" style="fill:rgb(253,196,0);fill-rule:nonzero;"/>
+        <path d="M29.7,20.7L25.5,18.3L26.7,16.3L30.8,18.7L29.7,20.7Z" style="fill:rgb(253,196,0);fill-rule:nonzero;"/>
+        <path d="M24.1,6.5L22.1,5.4L24.5,1.2L26.5,2.3L24.1,6.5Z" style="fill:rgb(253,196,0);fill-rule:nonzero;"/>
+    </g>
+</svg>

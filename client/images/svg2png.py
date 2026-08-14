@@ -3,7 +3,7 @@ from pathlib import Path
 
 def convert2Png(fileName):
     print(fileName)
-    cairosvg.svg2png(url=fileName, write_to=f"{fileName[:-4]}.png", output_width=128)
+    cairosvg.svg2png(url=fileName, write_to=f"128x/{fileName[:-4]}.png", output_width=128)
     cairosvg.svg2png(url=fileName, write_to=f"64x/{fileName[:-4]}.png", output_width=64)
     cairosvg.svg2png(url=fileName, write_to=f"32x/{fileName[:-4]}.png", output_width=32)
 

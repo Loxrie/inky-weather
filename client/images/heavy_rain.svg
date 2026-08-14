@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="Heavy-Rain" serif:id="Heavy Rain" transform="matrix(1,0,0,1,-3,2.046547)">
+        <path d="M11.6,24.1L12,19.4L8,21.7C7.3,22.1 6.8,22.9 6.8,23.8C6.8,25.1 7.9,26.2 9.2,26.2C10.5,26.3 11.5,25.3 11.6,24.1Z" style="fill:rgb(55,137,198);fill-rule:nonzero;"/>
+        <path d="M18.2,18.4L18.6,13.7L14.6,16C13.9,16.4 13.4,17.2 13.4,18.1C13.4,19.4 14.5,20.5 15.8,20.5C17,20.6 18,19.6 18.2,18.4Z" style="fill:rgb(55,137,198);fill-rule:nonzero;"/>
+    </g>
+</svg>

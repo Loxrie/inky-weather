@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="Partial-Moon" serif:id="Partial Moon" transform="matrix(1,0,0,1,0,2.1)">
+        <path d="M31,11.3C27.1,11.3 23.9,8.1 23.9,4.2C23.9,2.6 24.4,1.1 25.4,-0.1C21.9,0.3 19.2,3.3 19.2,6.9C22.4,7.1 24.9,9.7 24.9,12.9C24.9,13.2 24.9,13.5 24.8,13.8C25.3,13.9 25.7,13.9 26.2,13.9C28.5,13.9 30.5,12.8 31.8,11.1C31.6,11.3 31.3,11.3 31,11.3Z" style="fill:rgb(180,180,180);fill-rule:nonzero;"/>
+    </g>
+</svg>
