@@ -2,7 +2,7 @@ from machine import Pin, SPI
 import sdcard
 import uos
 import gc
-# import io
+#import io
 import time
 import json
 
@@ -29,6 +29,10 @@ gc.collect()
 # A short delay to give USB chance to initialise
 time.sleep(0.5)
 
+# USB Power
+usb_present_pin = Pin("WL_GPIO2", machine.Pin.IN)
+USB_POWER = True if usb_present_pin.value() == 1 else False
+
 # Setup for the display.
 graphics = PicoGraphics(DISPLAY)
 png = PNG(graphics)
@@ -46,7 +50,7 @@ except ImportError:
     print("Create wifi.py with your WiFi credentials")
 
 try:
-    from location import SERVER, LOCATION_ID, LOCATION_NAME, BEARER
+    from location import SERVER, LOCATION_ID, BEARER
 except ImportError:
     print("Create location.py with your location")
 
@@ -55,14 +59,7 @@ gc.collect()
 
 URL = f"{SERVER}/{LOCATION_ID}?report=1"
 
-# Title
-# Sunday: Sunny Intervals, Minimum Temperature: 15\xb0C (59\xb0F) Maximum Temperature: 31\xb0C (87\xb0F)
-# "(?P<day>\w+): (?P<summary>[A-z ]+), Minimum Temperature: (?P<min>\d+).*Maximum Temperature: (?P<max>\d+)"
-# summaryRegex = re.compile("([A-z ]+): ([A-z ]+)(?:, Minimum Temperature: )(\d+\xb0C) (?:\(\d+\xb0F\) Maximum Temperature: )?(\d+\xb0C)?")
-# descriptionRegex = re.compile("Wind Direction: ([a-z-]+), Wind Speed: (\d+mph), Visibility: ([A-z ]+), Pressure: (\d+mb), Humidity: (\d+%), UV Risk: (\d+), Pollution: ([A-z\- ]+), (?:(Sunrise): ([0-9:]+) [A-Z]+)?(?:, )?(?:(Sunset): ([0-9:]+) [A-Z]+)?")
-
-# Length of time between updates in minutes.
-# Frequent updates will reduce battery life!
+# Interval in minutes, 90 is a good shout, the weather forecast doesn't really update that often anwyay
 UPDATE_INTERVAL = 90
 
 MARGIN = 20
@@ -189,18 +186,19 @@ unitFields = {
 def get_json():
     try:
         socket = urequest.urlopen(URL, headers={"Authorization": f"Bearer {BEARER}"})
-        # data = bytearray(1024)
-        # with open('/sd/forecast.json', mode="wb") as f:
-        #     while True:
-        #         if socket.readinto(data) == 0:
-        #             break
-        #         f.write(data)
-        # socket.close()
-        # print(gc.mem_free())
+        data = bytearray(1024)
+        with open('/sd/forecast.json', mode="w") as f:
+            while True:
+                bytes_read = socket.readinto(data)
+                if bytes_read == 0:
+                    break
+                f.write(data[:bytes_read])
+        del data
+        socket.close()
         gc.collect()
-        # stream = io.open('/sd/forecast.json', mode="r")
-        # print(gc.mem_free())
-        output = json.load(socket)
+        forecast = open('/sd/forecast.json', mode="r")
+        output = json.load(forecast)
+        forecast.close()
         gc.collect()
         return output
 
@@ -210,6 +208,7 @@ def get_json():
 
 def update():
     global feed
+    feed = None
     feed = get_json()
 
 def isHourlyNight(timeslot, date):
@@ -228,14 +227,12 @@ def draw_weather_icon(weather_codes, nighttime):
 
 def draw_weather(weather, x, y, nighttime=False):
     for entry in weather_mapping[f"{weather.lower()}{' night' if nighttime else ''}"]:
-        print(f"Opening file {entry}")
         png.open_file(entry)
         png.decode(x, y)
 
 def draw_weather_icon_hourly(weather_codes, timeslots, date):
     for idx, weather_code in enumerate(weather_codes):
         isNight = isHourlyNight(timeslots[idx], date)
-        print(f"{date} @ {timeslots[idx]} is {"night" if isNight else "day"}")
         draw_weather(weather_code, column_offsets[idx], 120, isNight)
 
 def draw_summary_key(labels):
@@ -281,7 +278,7 @@ def draw():
     graphics.set_pen(BLACK)
 
     # Draws 2 articles from the feed if they're available.
-    if ((mode is None or mode == 'summary') and len(feed["summary"]["localDate"])) > 0:
+    if ((mode is None or mode == 'summary') and feed is not False and len(feed["summary"]["localDate"])) > 0:
         summary = feed["summary"]
         current_time = time.localtime(time.time())
         # 600x448
@@ -313,7 +310,7 @@ def draw():
         draw_summary(summary, summaryOffset)
 #        print("Pub Date")
 #        graphics.text(f"Last Updated: {dayOne['pubDate']}", 10, 470, WIDTH, 1)
-    elif ((mode == "hourly") and len(feed["hourly"]["timeslot"])) > 0:
+    elif ((mode == "hourly") and feed is not False and len(feed["hourly"]["timeslot"])) > 0:
         if (hourlyOffset + 7) > len(feed["hourly"]["timeslot"]):
             print(f"Overflow {hourlyOffset} in {feed["hourly"]["timeslot"]}")
             hourlyOffset -= 7
@@ -350,11 +347,10 @@ def draw():
         graphics.set_pen(BLACK)
         graphics.text("Unable to display weather!",
                       5, (HEIGHT // 2) - 15, WIDTH, 2)
-        graphics.text("Check your network settings in wifi.py",
+        graphics.text("Check your network settings in wifi.py / location.py and sd card log file",
                       5, (HEIGHT // 2) + 2, WIDTH, 2)
 
     graphics.update()
-    gc.collect()
 
 last_json_update = None
 idle_time = None
@@ -362,40 +358,34 @@ idle_time = None
 while True:
     drawScreen = False
     if last_json_update is None or ((time.time() - last_json_update) > (UPDATE_INTERVAL * 60)):
-        print("No data, or interval exceeded, updating")
+        ih.write_log("Update weather data")
         last_json_update = time.time()
         update()
-        print("Data retrieved")
         drawScreen = True
         time.sleep(0.5)
 
-    if (idle_time is not None and time.time() - idle_time) > 10:
-        print("Idle time exceeded sleeping")
+    if (USB_POWER is False and idle_time is not None and time.time() - idle_time) > 10:
+        ih.write_log("Idle time reached")
         idle_time = None
         ih.sleep(UPDATE_INTERVAL)
     elif ih.inky_frame.button_a.read() and (summaryOffset != 0 or mode == "hourly"):
-        print("Going back to first screen")
         mode = "summary"
         summaryOffset = 0
         hourlyOffset = 0
         idle_time = None
         drawScreen = True
     elif ih.inky_frame.button_e.read():
-        print("Displaying next 7 days")
         summaryOffset = 0 + len(column_offsets)
         idle_time = None
         drawScreen = True
-    elif ih.inky_frame.button_c.read():
-        print("Deep sleep time")
+    elif USB_POWER is False and ih.inky_frame.button_c.read():
         idle_time = None
         ih.sleep(UPDATE_INTERVAL)
     elif ih.inky_frame.button_b.read() and mode == "hourly" and hourlyOffset >= 7:
-        print("Going back a report page")
         hourlyOffset -= 7
         idle_time = None
         drawScreen = True
     elif ih.inky_frame.button_d.read():
-        print("Going hourly, buckle up")
         if (mode == 'summary'):
             mode = "hourly"
             hourlyOffset = 0
@@ -407,14 +397,14 @@ while True:
         time.sleep(0.5)
     
     if drawScreen:
-        print("Updating screen")
+        ih.write_log("Drawing screen")
         ih.led_warn.on()
         draw()
         ih.led_warn.off()
 
     if idle_time is None:
-        print("Setting idle time")
+        ih.write_log("Setting idle time")
         idle_time = time.time()
 
-    print(f"Last JSON Update {last_json_update} Idle time {idle_time} UPDATE_INTERVAL {UPDATE_INTERVAL}")
-    print(f"Time elapsed since last json update {time.time() - last_json_update}")
+#    print(f"Last JSON Update {last_json_update} Idle time {idle_time} UPDATE_INTERVAL {UPDATE_INTERVAL}")
+#    print(f"Time elapsed since last json update {time.time() - last_json_update}")
