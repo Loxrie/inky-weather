@@ -88,6 +88,8 @@ def network_connect(SSID, PSK):
     # Enable the Wireless
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
+    
+    network.hostname("inkyweather")
 
     # Number of attempts to make before timeout
     max_wait = 10
@@ -134,14 +136,15 @@ def save_state(data):
         f.write(json.dumps(data))
         f.flush()
 
-def write_log(string):
+def write_log(string, logToFile = False):
     ct = time.localtime(time.time())
-    with open("/sd/weather.log", "a") as f:
-        logLine = f"{ct[0]}-{ct[1]:02}-{ct[2]:02} {ct[3]:02}:{ct[4]:02}:{ct[5]:02}  - {string}"
-        print(logLine)
-        f.write(logLine + "\n")
-        f.flush()
-        f.close()
+    logLine = f"{ct[0]}-{ct[1]:02}-{ct[2]:02} {ct[3]:02}:{ct[4]:02}:{ct[5]:02}  - {string}"
+    print(logLine)
+    if logToFile is True:
+        with open("/sd/weather.log", "a") as f:
+            f.write(logLine + "\n")
+            f.flush()
+            f.close()
 
 def load_state():
     global state
