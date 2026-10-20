@@ -119,6 +119,7 @@ image_prefix = "/sd/" if USE_SD_CARD is True else "/"
 
 weather_mapping = {
     "drizzle": {f"{image_prefix}images/64x/thick_cloud_unbroken.png", f"{image_prefix}images/64x/drizzle.png"},
+    "fog": {f"{image_prefix}images/64x/fog.png"},
     "heavy rain": {f"{image_prefix}images/64x/thick_cloud.png", f"{image_prefix}images/64x/heavy_rain.png"},
     "heavy rain showers": {f"{image_prefix}images/64x/thick_cloud.png", f"{image_prefix}images/64x/heavy_rain.png", f"{image_prefix}images/64x/partial_sun.png"},
     "light cloud": {f"{image_prefix}images/64x/light_cloud.png"},
